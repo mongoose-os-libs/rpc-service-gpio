@@ -5,9 +5,10 @@
 
 #include <stdlib.h>
 
+#include "mgos_rpc.h"
+
 #include "common/mg_str.h"
 #include "fw/src/mgos_gpio.h"
-#include "fw/src/mgos_rpc.h"
 
 static void gpio_read_handler(struct mg_rpc_request_info *ri, void *cb_arg,
                               struct mg_rpc_frame_info *fi,

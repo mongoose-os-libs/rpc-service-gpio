@@ -8,8 +8,6 @@
 
 #include "fw/src/mgos_features.h"
 
-#if MGOS_ENABLE_RPC
-
 #include "fw/src/mgos_init.h"
 
 #ifdef __cplusplus
@@ -22,5 +20,4 @@ bool mgos_rpc_service_gpio_init(void);
 }
 #endif /* __cplusplus */
 
-#endif /* MGOS_ENABLE_RPC */
 #endif /* CS_FW_SRC_MGOS_GPIO_SERVICE_H_ */
