@@ -9,7 +9,7 @@ Below is a list of exported RPC methods and arguments:
 
 ## GPIO.Read
 Set given pin in INPUT mode, read GPIO pin, return its value. Arguments:
-```json
+```javascript
 {
   "pin": 15     // Required. Pin number.
 }
@@ -25,7 +25,7 @@ Example usage:
 
 ## GPIO.Write
 Set given pin in OUTPUT mode, set GPIO pin. Arguments:
-```json
+```javascript
 {
   "pin": 15,    // Required. Pin number.
   "value": 0    // Required. Voltage level. Either 0 (low) or 1 (high).
@@ -39,7 +39,7 @@ Example usage:
 
 ## GPIO.Toggle
 Set given pin in OUTPUT mode, toggle voltage level and return that level. Arguments:
-```json
+```javascript
 {
   "pin: 15     // Required. Pin number.
 }
@@ -58,7 +58,7 @@ Example usage:
 ## GPIO.SetIntHandler
 Set interrupt handler on a GPIO pin that calls a remote RPC service
 on interrupt. Arguments:
-```json
+```javascript
 {
   "pin": 15,            // Required. Pin number.
   "edge": "any",        // Required. One of: "pos", "neg", "any".
