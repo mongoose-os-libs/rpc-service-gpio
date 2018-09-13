@@ -13,4 +13,4 @@ tags:
   - c
   - gpio
   - rpc
-  - docs:rpc-services:GPIO
+  - docs:rpc:Service - GPIO
