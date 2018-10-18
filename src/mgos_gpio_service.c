@@ -18,6 +18,7 @@
 #include <stdlib.h>
 
 #include "common/cs_dbg.h"
+#include "common/cs_time.h"
 #include "common/mg_str.h"
 
 #include "mgos_gpio.h"
@@ -101,7 +102,7 @@ static void gpio_int_cb(int pin, void *arg) {
   struct mg_rpc *c = mgos_rpc_get_global();
   if (c == NULL) return;
   bool value = mgos_gpio_read(pin);
-  double ts = mg_time();
+  double ts = cs_time();
   struct mg_rpc_call_opts opts;
   memset(&opts, 0, sizeof(opts));
   opts.dst = pii->dst;
