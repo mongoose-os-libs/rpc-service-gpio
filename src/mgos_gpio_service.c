@@ -238,6 +238,34 @@ static void gpio_rm_int_handler(struct mg_rpc_request_info *ri, void *cb_arg,
   (void) fi;
 }
 
+static void gpio_blink_handler(struct mg_rpc_request_info *ri, void *cb_arg,
+                               struct mg_rpc_frame_info *fi,
+                               struct mg_str args) {
+  int pin, on_ms, off_ms;
+  if (json_scanf(args.p, args.len, ri->args_fmt, &pin, &on_ms, &off_ms) != 3) {
+    mg_rpc_send_errorf(ri, 400, "pin, on_ms and off_ms are required");
+    ri = NULL;
+    return;
+  }
+  if (!mgos_gpio_set_mode(pin, MGOS_GPIO_MODE_OUTPUT)) {
+    mg_rpc_send_errorf(ri, 400, "error setting pin mode");
+    ri = NULL;
+    return;
+  }
+  if ((on_ms < 0) || (off_ms < 0) || (on_ms >= 65536) || (off_ms >= 65536)) {
+    mg_rpc_send_errorf(ri, 400,
+                       "on_ms (%d) and off_ms (%d) must be >=0 and <65536",
+                       on_ms, off_ms);
+    ri = NULL;
+    return;
+  }
+  mgos_gpio_blink(pin, on_ms, off_ms);
+  mg_rpc_send_responsef(ri, NULL);
+  ri = NULL;
+  (void) cb_arg;
+  (void) fi;
+}
+
 bool mgos_rpc_service_gpio_init(void) {
   struct mg_rpc *c = mgos_rpc_get_global();
   mg_rpc_add_handler(c, "GPIO.Read", "{pin: %d}", gpio_read_handler, NULL);
@@ -250,5 +278,7 @@ bool mgos_rpc_service_gpio_init(void) {
       gpio_set_int_handler, NULL);
   mg_rpc_add_handler(c, "GPIO.RemoveIntHandler", "{pin: %d}",
                      gpio_rm_int_handler, NULL);
+  mg_rpc_add_handler(c, "GPIO.Blink", "{pin: %d, on_ms:%d, off_ms:%d}",
+                     gpio_blink_handler, NULL);
   return true;
 }
