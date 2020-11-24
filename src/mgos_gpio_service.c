@@ -290,7 +290,7 @@ bool mgos_rpc_service_gpio_init(void) {
   struct mg_rpc *c = mgos_rpc_get_global();
   mg_rpc_add_handler(c, "GPIO.Read", "{pin: %d}", gpio_read_handler, NULL);
   mg_rpc_add_handler(c, "GPIO.ReadOut", "{pin: %d}", gpio_read_out_handler,
-		     NULL);
+                     NULL);
   mg_rpc_add_handler(c, "GPIO.Write", "{pin: %d, value: %d}",
                      gpio_write_handler, NULL);
   mg_rpc_add_handler(c, "GPIO.Toggle", "{pin: %d}", gpio_toggle_handler, NULL);
