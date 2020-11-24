@@ -23,6 +23,22 @@ Example usage:
 }</code></pre>
 
 
+## GPIO.ReadOut
+Set given pin in OUTPUT mode, read GPIO pin, return its value. Arguments:
+```javascript
+{
+  "pin": 15     // Required. Pin number.
+}
+```
+
+Example usage:
+
+<pre class="command-line language-bash" data-user="chris" data-host="localhost" data-output="2-100"><code>mos call GPIO.ReadOut '{"pin": 1}'
+{
+  "value": 0
+}</code></pre>
+
+
 ## GPIO.Write
 Set given pin in OUTPUT mode, set GPIO pin. Arguments:
 ```javascript
