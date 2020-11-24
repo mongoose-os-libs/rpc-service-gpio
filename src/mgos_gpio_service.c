@@ -45,6 +45,21 @@ static void gpio_read_handler(struct mg_rpc_request_info *ri, void *cb_arg,
   (void) fi;
 }
 
+static void gpio_read_out_handler(struct mg_rpc_request_info *ri, void *cb_arg,
+                                  struct mg_rpc_frame_info *fi,
+                                  struct mg_str args) {
+  int pin;
+  if (json_scanf(args.p, args.len, ri->args_fmt, &pin) != 1) {
+    mg_rpc_send_errorf(ri, 400, "pin is required");
+    ri = NULL;
+    return;
+  }
+  mg_rpc_send_responsef(ri, "{value: %d}", mgos_gpio_read_out(pin));
+  ri = NULL;
+  (void) cb_arg;
+  (void) fi;
+}
+
 static void gpio_write_handler(struct mg_rpc_request_info *ri, void *cb_arg,
                                struct mg_rpc_frame_info *fi,
                                struct mg_str args) {
@@ -269,6 +284,8 @@ static void gpio_blink_handler(struct mg_rpc_request_info *ri, void *cb_arg,
 bool mgos_rpc_service_gpio_init(void) {
   struct mg_rpc *c = mgos_rpc_get_global();
   mg_rpc_add_handler(c, "GPIO.Read", "{pin: %d}", gpio_read_handler, NULL);
+  mg_rpc_add_handler(c, "GPIO.ReadOut", "{pin: %d}", gpio_read_out_handler,
+		     NULL);
   mg_rpc_add_handler(c, "GPIO.Write", "{pin: %d, value: %d}",
                      gpio_write_handler, NULL);
   mg_rpc_add_handler(c, "GPIO.Toggle", "{pin: %d}", gpio_toggle_handler, NULL);
