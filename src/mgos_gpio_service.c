@@ -51,10 +51,15 @@ static void gpio_read_out_handler(struct mg_rpc_request_info *ri, void *cb_arg,
   int pin;
   if (json_scanf(args.p, args.len, ri->args_fmt, &pin) != 1) {
     mg_rpc_send_errorf(ri, 400, "pin is required");
-    ri = NULL;
-    return;
+    goto exit;
+  }
+  if (!mgos_gpio_set_mode(pin, MGOS_GPIO_MODE_OUTPUT)) {
+    mg_rpc_send_errorf(ri, 400, "error setting pin mode");
+    goto exit;
   }
   mg_rpc_send_responsef(ri, "{value: %d}", mgos_gpio_read_out(pin));
+
+exit:
   ri = NULL;
   (void) cb_arg;
   (void) fi;
