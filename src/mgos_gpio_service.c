@@ -68,19 +68,22 @@ exit:
 static void gpio_write_handler(struct mg_rpc_request_info *ri, void *cb_arg,
                                struct mg_rpc_frame_info *fi,
                                struct mg_str args) {
-  int pin, value;
-  if (json_scanf(args.p, args.len, ri->args_fmt, &pin, &value) != 2) {
+  int pin = -1, value = -1;
+  bool od = false;
+  json_scanf(args.p, args.len, ri->args_fmt, &pin, &value, &od);
+  if (pin < 0 || value < 0) {
     mg_rpc_send_errorf(ri, 400, "pin and value are required");
-    ri = NULL;
-    return;
-  }
-  if (!mgos_gpio_set_mode(pin, MGOS_GPIO_MODE_OUTPUT)) {
-    mg_rpc_send_errorf(ri, 400, "error setting pin mode");
     ri = NULL;
     return;
   }
   if (value != 0 && value != 1) {
     mg_rpc_send_errorf(ri, 400, "value must be 0 or 1");
+    ri = NULL;
+    return;
+  }
+  if (!mgos_gpio_set_mode(
+          pin, (od ? MGOS_GPIO_MODE_OUTPUT_OD : MGOS_GPIO_MODE_OUTPUT))) {
+    mg_rpc_send_errorf(ri, 400, "error setting pin mode");
     ri = NULL;
     return;
   }
@@ -291,7 +294,7 @@ bool mgos_rpc_service_gpio_init(void) {
   mg_rpc_add_handler(c, "GPIO.Read", "{pin: %d}", gpio_read_handler, NULL);
   mg_rpc_add_handler(c, "GPIO.ReadOut", "{pin: %d}", gpio_read_out_handler,
                      NULL);
-  mg_rpc_add_handler(c, "GPIO.Write", "{pin: %d, value: %d}",
+  mg_rpc_add_handler(c, "GPIO.Write", "{pin: %d, value: %d, od: %B}",
                      gpio_write_handler, NULL);
   mg_rpc_add_handler(c, "GPIO.Toggle", "{pin: %d}", gpio_toggle_handler, NULL);
   mg_rpc_add_handler(
